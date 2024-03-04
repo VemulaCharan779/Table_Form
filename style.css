@@ -1,0 +1,13 @@
+.form-section{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+ }
+
+
+ .submit-button{
+     padding: 8px;
+     margin-top: 20px;
+    
+ }
