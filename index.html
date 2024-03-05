@@ -17,12 +17,33 @@
             <label for="useremail">Email</label>
             <input type="email" id="useremail"> 
             <label for="usernumber">Phone Number</label>
-            <input type="number" id="usernumber">
+            <input type="tel" id="usernumber">
         
        
             <button  class="submit-button" onclick="submitForm()">Submit</button>
         
    </form>
+
+   <div class="table-container">
+      <table id="userTable">
+         <thead>
+            <tr>
+               <th>Name</th>
+               <th>Age</th>
+               <th>email</th>
+               <th>Phone Number</th>
+            </tr>
+         </thead>
+         <tbody id="userTableBody">
+   
+         </tbody>
+      </table>
+   </div>
+
+   <div class="pagination" id="pagination">
+         <button id="prev">Prev</button>
+         <button id="Next">Next</button>
+   </div>
 
    <script src="script.js">
 
