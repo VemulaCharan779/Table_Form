@@ -1,95 +1,126 @@
-let user = document.getElementById('username');
-let email = document.getElementById('useremail');
-let age = document.getElementById('userage');
-let phone = document.getElementById('usernumber');
-
-let submitButton = document.querySelector('.submit-button');
-let userTableBody = document.getElementById('userTableBody');
-
-let users = JSON.parse(localStorage.getItem("users")) || [];
-
-user.addEventListener('input', function() {
-    user.value = user.value.replace(/[^a-zA-Z\s]/g, '');
+document.addEventListener("DOMContentLoaded", function () {
+    updateUserTable();
+    displayRows(currentPage);
 });
 
-phone.addEventListener('input', function() {
-    phone.value = phone.value.replace(/[^0-9\s]/g, '');
-})
+document.getElementById("name").addEventListener("input", function (event) {
+  this.value = this.value.replace(/[^a-zA-Z -]/g, "");
+});
 
-document.addEventListener('DOMContentLoaded', function() {
-    updateUserTable();
-})
+document.getElementById("phone").addEventListener("input", function (event) {
+  this.value = this.value.replace(/\D/g, "");
+});
 
-submitButton.addEventListener("click", submitForm)
+function submitForm() {
+  var name = document.getElementById("name").value;
+  var age = document.getElementById("age").value;
+  var email = document.getElementById("email").value;
+  var phone = document.getElementById("phone").value;
 
+  var isValid = true;
 
-function submitForm(e) {
+  if (name.length < 5) {
+    alert("Minimum 5 letters ");
+    isValid = false;
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!emailRegex.test(email)) {
+    alert("email invalid");
+    isValid = false;
+  }
+
+  const phoneNumberInput = phone.trim();
+  const phoneRegex = /^\d{10}$/;
+
+  if (!phoneRegex.test(phoneNumberInput)) {
+    alert("Phone number must be 10 digits");
+    phone.value = "";
+    phone.focus();
     e.preventDefault();
-    let isValid = true;
+    isValid = false;
+  }
 
-    if (user.value.length < 5) {
-        alert("Minimum 5 letters ");
-        isValid = false;
-    }
+  if (age> 120) {
+    alert("invalid age");
+    isValid = false;
+  }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (isValid) {
+    const users = JSON.parse(localStorage.getItem("userDetails")) || [];
+    const user = {
+      name: name,
+      email: email,
+      phone: phone,
+      age: age,
+    };
+    users.push(user);
+    localStorage.setItem("userDetails", JSON.stringify(users));
+    displayRows(currentPage);
+  }
 
-    if(!emailRegex.test(email.value)){
-        alert("email invalid");
-        isValid = false;
-    }
-
-  
-    const phoneNumberInput = phone.value.trim();
-    const phoneRegex = /^\d{10}$/;
-
-    if (!phoneRegex.test(phoneNumberInput)) {
-        alert("Phone number must be 10 digits");
-        phone.value = ""; 
-        phone.focus();
-        e.preventDefault(); 
-        isValid = false;
-    }
-
-    if(age.value>120){
-        alert('invalid age');
-        isValid = false;
-    }
-
-    if(isValid){
-        userDetails = {
-            name : user.value,
-            email : email.value,
-            age : age.value,
-            phone : phone.value
-        };
-
-        users.push(userDetails);
-        localStorage.setItem("users", JSON.stringify(users));
-
-        updateUserTable();
-
-        user.value= '';
-        email.value= '';
-        age.value='';
-        phone.value='';
-    }
-    
+  return isValid;
 }
 
-function updateUserTable(){
-    userTableBody.innerHTML= ' ';
-    
-    users.forEach(element => {
-        let row = document.createElement('tr');
-         row.innerHTML = `
-           <td>${element.name}</td>
-           <td>${element.age}</td>
-           <td>${element.email}</td>
-           <td>${element.phone}</td>
-         `;
+function updateUserTable() {
+  const users = JSON.parse(localStorage.getItem("userDetails")) || [];
+  const tableBody = document.getElementById("tableBody");
 
-          userTableBody.appendChild(row);
-    });
+  tableBody.innerHTML = "";
+
+  users.forEach((user) => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+          <td>${user.name}</td>
+          <td>${user.age}</td>
+          <td>${user.email}</td>
+          <td>${user.phone}</td>
+      `;
+    tableBody.appendChild(row);
+  });
+}
+
+const tbody = document.getElementById("tableBody");
+const rowsPerPage = 5;
+let currentPage = 1;
+
+function displayRows(page) {
+  const startIndex = (page - 1) * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const rows = tbody.querySelectorAll("tr");
+  rows.forEach((row, index) => {
+    if (index >= startIndex && index < endIndex) {
+      row.style.display = "table-row";
+    } else {
+      row.style.display = "none";
+    }
+  });
+
+  updatePagination();
+}
+
+const prevButton = document.getElementById("prev");
+const nextButton = document.getElementById("next");
+
+prevButton.addEventListener("click", () => {
+  if (currentPage > 1) {
+    currentPage--;
+    displayRows(currentPage);
+  }
+});
+
+nextButton.addEventListener("click", () => {
+  const lastPage = Math.ceil(tbody.querySelectorAll("tr").length / rowsPerPage);
+  if (currentPage < lastPage) {
+    currentPage++;
+    displayRows(currentPage);
+  }
+});
+
+function updatePagination() {
+  const lastPage = Math.ceil(tbody.querySelectorAll("tr").length / rowsPerPage);
+  prevButton.disabled = currentPage === 1;
+  nextButton.disabled = currentPage === lastPage;
 }
 
