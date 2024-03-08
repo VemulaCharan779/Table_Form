@@ -1,73 +1,84 @@
 * {
-   font-family: Arial, sans-serif;
-   margin: 0;
-   padding: 0;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
 .container {
-  width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-  box-sizing: border-box; 
+ width: 100%;
+ max-width: 800px;
+ margin: 0 auto;
+ padding: 20px;
+ box-sizing: border-box; 
 }
 
 .form-section{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  
-  margin-top: 5%;
-  max-width: 80%;
-  margin-left: auto;
-  margin-right: auto;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ flex-direction: column;
+ 
+ margin-top: 5%;
+ max-width: 80%;
+ margin-left: auto;
+ margin-right: auto;
 }
 
 
 
 .submit-button{
-  padding: 8px;
-  margin-top: 20px;
-  cursor: pointer;
+ padding: 8px;
+ margin-top: 20px;
+ cursor: pointer;
 }
 
 
 
 .table-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 10vh;
-  overflow: auto;
-  display: block;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ margin-top: 10vh;
+ overflow: auto;
+ display: block;
 }
 
 
-
+#myTable{
+ margin-top: 2vh;
+}
 
 .table-container table{
-  border-collapse: collapse;
-  border-spacing: 0;
-  border: 1px solid black;
-  width: 100%;
+ border-collapse: collapse;
+ border-spacing: 0;
+ border: 1px solid black;
+ width: 100%;
 }
 thead, th{
-  color: white;
-  background-color: black;
-  cursor: pointer;
+ color: white;
+ background-color: black;
+ cursor: pointer;
 }
 
 
 thead, th, td {
-  padding: 10px;
-  border: 1px solid black;
-  text-align: center;
-  
+ padding: 10px;
+ border: 1px solid black;
+ text-align: center;
+ 
 }
 
 
 .filter-button{
-  display: flex;
-  justify-content: space-between;
+ display: flex;
+ justify-content: space-between;
+}
+
+.pagination-options, 
+.search-container{
+ display: inline;
+}
+
+.search-container{
+ margin-left: 1vw;
 }

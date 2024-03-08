@@ -23,18 +23,31 @@
                 <button type="submit" class="submit-button" onclick="submitForm()">Submit</button>
             </form>
         </div>
+
+       
         <div class="table-container">
-            
-            <table border="1" id="myTable">
+            <div class="pagination-options">
+                <select name="" id="pagination-selector" onchange="paginationChange()">
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                </select>
+            </div>
+            <div class="search-container">
+                <input type="text" id="mySearch" oninput="searchFunction()" placeholder="Search">
+            </div>
+            <table  id="myTable">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Age</th>
-                        <th>Email</th>
-                        <th>Phone number</th>
+                        <th data-column="name">Name</th>
+                        <th data-column="age">Age</th>
+                        <th data-column="email">Email</th>
+                        <th data-column="phone">Phone Number</th>
                     </tr>
                 </thead>
-                <tbody id="tableBody"></tbody>
+                <tbody id="tableBody">
+                    
+                </tbody>
             </table>
             <div class="filter-button">
                 <button id="prev">Previous</button>
@@ -42,6 +55,8 @@
             </div>
             
         </div>
+
+        
     </div>
 
     <script src="script.js"></script>

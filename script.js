@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
-    updateUserTable();
-    displayRows(currentPage);
+  updateUserTable();
+  displayRows(currentPage);
+  document.getElementById("mySearch").addEventListener("input", searchFunction);
 });
 
 document.getElementById("name").addEventListener("input", function (event) {
@@ -11,7 +12,8 @@ document.getElementById("phone").addEventListener("input", function (event) {
   this.value = this.value.replace(/\D/g, "");
 });
 
-function submitForm() {
+function submitForm(e) {
+  
   var name = document.getElementById("name").value;
   var age = document.getElementById("age").value;
   var email = document.getElementById("email").value;
@@ -31,6 +33,11 @@ function submitForm() {
     isValid = false;
   }
 
+  if (age > 120 || age < 0 ) {
+    alert("invalid age");
+    isValid = false;
+  }
+
   const phoneNumberInput = phone.trim();
   const phoneRegex = /^\d{10}$/;
 
@@ -42,10 +49,7 @@ function submitForm() {
     isValid = false;
   }
 
-  if (age> 120) {
-    alert("invalid age");
-    isValid = false;
-  }
+  
 
   if (isValid) {
     const users = JSON.parse(localStorage.getItem("userDetails")) || [];
@@ -63,64 +67,153 @@ function submitForm() {
   return isValid;
 }
 
-function updateUserTable() {
-  const users = JSON.parse(localStorage.getItem("userDetails")) || [];
-  const tableBody = document.getElementById("tableBody");
+const tableBody = document.getElementById("tableBody");
+const users = JSON.parse(localStorage.getItem("userDetails")) || [];
+let rowsPerPage = 5;
+let currentPage = 1;
+const paginationSelector = document.getElementById('pagination-selector');
 
-  tableBody.innerHTML = "";
 
-  users.forEach((user) => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-          <td>${user.name}</td>
-          <td>${user.age}</td>
-          <td>${user.email}</td>
-          <td>${user.phone}</td>
-      `;
-    tableBody.appendChild(row);
-  });
+function paginationChange(){
+    rowsPerPage = paginationSelector.value;
+    displayRows(currentPage);  
 }
 
-const tbody = document.getElementById("tableBody");
-const rowsPerPage = 5;
-let currentPage = 1;
+function updateUserTable() {
+    tableBody.innerHTML = "";
+
+    users.forEach((user) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>${user.name}</td>
+            <td>${user.age}</td>
+            <td>${user.email}</td>
+            <td>${user.phone}</td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
 
 function displayRows(page) {
-  const startIndex = (page - 1) * rowsPerPage;
-  const endIndex = startIndex + rowsPerPage;
-  const rows = tbody.querySelectorAll("tr");
-  rows.forEach((row, index) => {
-    if (index >= startIndex && index < endIndex) {
-      row.style.display = "table-row";
-    } else {
-      row.style.display = "none";
-    }
-  });
+    const startIndex = (page - 1) * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+    const rows = tableBody.querySelectorAll("tr");
+    rows.forEach((row, index) => {
+        if (index >= startIndex && index < endIndex) {
+            row.style.display = "table-row";
+        } else {
+            row.style.display = "none";
+        }
+    });
 
-  updatePagination();
+    updatePagination();
 }
 
 const prevButton = document.getElementById("prev");
 const nextButton = document.getElementById("next");
 
 prevButton.addEventListener("click", () => {
-  if (currentPage > 1) {
-    currentPage--;
-    displayRows(currentPage);
-  }
+    if (currentPage > 1) {
+        currentPage--;
+        displayRows(currentPage);
+    }
 });
 
 nextButton.addEventListener("click", () => {
-  const lastPage = Math.ceil(tbody.querySelectorAll("tr").length / rowsPerPage);
-  if (currentPage < lastPage) {
-    currentPage++;
-    displayRows(currentPage);
-  }
+    const lastPage = Math.ceil(tableBody.querySelectorAll("tr").length / rowsPerPage);
+    if (currentPage < lastPage) {
+        currentPage++;
+        displayRows(currentPage);
+    }
 });
 
 function updatePagination() {
-  const lastPage = Math.ceil(tbody.querySelectorAll("tr").length / rowsPerPage);
-  prevButton.disabled = currentPage === 1;
-  nextButton.disabled = currentPage === lastPage;
+    const lastPage = Math.ceil(tableBody.querySelectorAll("tr").length / rowsPerPage);
+    prevButton.disabled = currentPage === 1;
+    nextButton.disabled = currentPage === lastPage;
 }
+
+function searchFunction() {
+  var mySearch = document.getElementById("mySearch");
+  var filter = mySearch.value.trim().toUpperCase();
+  const rows = tableBody.querySelectorAll("tr");
+
+  let count = 0;
+  
+
+  for (let i = 0; i < rows.length; i++) {
+      const user = users[i];
+      const userValues = Object.values(user);
+      
+      var found = false;
+
+      for (let j = 0; j < userValues.length; j++) {
+          const value = userValues[j].toString().toUpperCase();
+          if (value.includes(filter)) {
+              found = true;
+              break;
+          }
+      }
+
+     
+      if ((found || filter === "") && count < rowsPerPage) {
+          rows[i].style.display = ""; 
+          count++;
+      } else {
+          rows[i].style.display = "none"; 
+      }
+  }
+
+ 
+  updatePagination();
+}
+
+
+
+const headers = document.querySelectorAll("#myTable th");
+let sortingOrder = Array.from(headers).map(() => -1); 
+let SortColumn = null;
+
+headers.forEach((header, index) => {
+  header.addEventListener("click", function() {
+    const column = header.dataset.column;
+
+    if (column === SortColumn) {
+      sortingOrder[index] *= -1; 
+    } else {
+      SortColumn = column;
+      sortingOrder = Array.from({ length: headers.length }).fill(-1); 
+      sortingOrder[index] = 1; 
+    }
+
+    sortTable(index);
+  });
+});
+
+function sortTable(columnIndex) {
+  const tableBody = document.getElementById("tableBody");
+  const rows = Array.from(tableBody.querySelectorAll("tr"));
+
+  rows.sort((rowA, rowB) => {
+    const cellA = rowA.cells[columnIndex].textContent.trim().toLowerCase();
+    const cellB = rowB.cells[columnIndex].textContent.trim().toLowerCase();
+    
+   
+    const cellComparison = cellA.localeCompare(cellB);
+    if (cellComparison !== 0) {
+      return sortingOrder[columnIndex] * cellComparison;
+    } else {
+      
+      return sortingOrder[columnIndex] * (rows.indexOf(rowA) - rows.indexOf(rowB));
+    }
+  });
+
+  rows.forEach(row => {
+    tableBody.appendChild(row);
+  });
+}
+
+
+
+
 
