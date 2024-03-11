@@ -18,9 +18,10 @@ document.getElementById("phone").addEventListener("input", function (event) {
 
 
 
-function submitForm(e) {
+function  submitForm(e) {
+  
   var name = document.getElementById("name").value;
-  var age = document.getElementById("age").value;
+  var age = document.getElementById("age").value;  
   var email = document.getElementById("email").value;
   var phone = document.getElementById("phone").value;
 
