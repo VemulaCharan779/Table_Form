@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
   updateUserTable();
   displayRows(currentPage);
   document.getElementById("mySearch").addEventListener("input", searchFunction);
+  showTable();
 });
 
 document.getElementById("name").addEventListener("input", function (event) {
@@ -65,6 +66,24 @@ function submitForm(e) {
   }
 
   return isValid;
+}
+
+
+
+const show = document.getElementById('show-table');
+let tableContainer = document.getElementById('table-container');
+
+function showTable(){
+  
+  if(tableContainer.style.display === 'none'){
+    tableContainer.style.display = "block";
+    show.innerText = 'Hide';
+  }
+  else{
+    tableContainer.style.display = "none";
+    show.innerText = 'Show';
+
+  }
 }
 
 const tableBody = document.getElementById("tableBody");

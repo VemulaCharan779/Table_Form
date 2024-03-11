@@ -1,84 +1,118 @@
+
+
 * {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
 }
 
-.container {
- width: 100%;
- max-width: 800px;
- margin: 0 auto;
- padding: 20px;
- box-sizing: border-box; 
+body{
+   background: url(./assests/pagebg.jpg);
+}
+
+ .container {
+  
+  
+   
+   width: 100%;
+   max-width: 800px;
+   margin: 0 auto;
+   padding: 20px;
+   box-sizing: border-box; 
 }
 
 .form-section{
- display: flex;
- align-items: center;
- justify-content: center;
- flex-direction: column;
+   box-shadow: 0 0 10px rgba(234, 229, 229, 0.5);
  
- margin-top: 5%;
- max-width: 80%;
- margin-left: auto;
- margin-right: auto;
+   padding: 30px 0;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   flex-direction: column;
+   margin-top: 5%;
+   max-width: 80%;
+   margin-left: auto;
+   margin-right: auto;
 }
 
-
+.user-content{
+   margin-top: 10px;
+}
 
 .submit-button{
- padding: 8px;
- margin-top: 20px;
- cursor: pointer;
+   padding: 8px;
+   margin-top: 20px;
+   cursor: pointer;
 }
 
 
 
 .table-container {
- display: flex;
- align-items: center;
- justify-content: center;
- margin-top: 10vh;
- overflow: auto;
- display: block;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   margin-top: 10vh;
+   overflow: auto;
+   display: block;
 }
 
 
 #myTable{
- margin-top: 2vh;
+   margin-top: 2vh;
 }
 
 .table-container table{
- border-collapse: collapse;
- border-spacing: 0;
- border: 1px solid black;
- width: 100%;
+   border-collapse: collapse;
+   border-spacing: 0;
+   border: 1px solid black;
+   width: 100%;
 }
 thead, th{
- color: white;
- background-color: black;
- cursor: pointer;
+   color: black;
+   padding: 10px;
+   background-color: lightblue;
+   cursor: pointer;
 }
 
 
-thead, th, td {
- padding: 10px;
- border: 1px solid black;
- text-align: center;
- 
+thead,  td {
+   color: white;
+   padding: 10px;
+   border: 1px solid black;
+   text-align: center;
+   
+}
+
+td:hover{
+   background-color: gray;
+}
+
+th:hover{
+   background-color: rgb(58, 52, 52);
 }
 
 
 .filter-button{
- display: flex;
- justify-content: space-between;
+   display: flex;
+   justify-content: space-between;
 }
 
 .pagination-options, 
 .search-container{
- display: inline;
+   display: inline;
 }
 
 .search-container{
- margin-left: 1vw;
+   margin-left: 1vw;
+}
+
+.show-hide-table{
+   margin-top: 3vh;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+#show-table{
+   padding: 10px 20px;
 }
