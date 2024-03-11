@@ -1,20 +1,24 @@
+let users = JSON.parse(localStorage.getItem("userDetails")) || [];
 document.addEventListener("DOMContentLoaded", function () {
-  updateUserTable();
+  updateUserTable(users);
   displayRows(currentPage);
   document.getElementById("mySearch").addEventListener("input", searchFunction);
   showTable();
 });
 
+
 document.getElementById("name").addEventListener("input", function (event) {
   this.value = this.value.replace(/[^a-zA-Z -]/g, "");
 });
+
 
 document.getElementById("phone").addEventListener("input", function (event) {
   this.value = this.value.replace(/\D/g, "");
 });
 
+
+
 function submitForm(e) {
-  
   var name = document.getElementById("name").value;
   var age = document.getElementById("age").value;
   var email = document.getElementById("email").value;
@@ -34,7 +38,7 @@ function submitForm(e) {
     isValid = false;
   }
 
-  if (age > 120 || age < 0 ) {
+  if (age > 120 || age < 0) {
     alert("invalid age");
     isValid = false;
   }
@@ -50,10 +54,7 @@ function submitForm(e) {
     isValid = false;
   }
 
-  
-
   if (isValid) {
-    const users = JSON.parse(localStorage.getItem("userDetails")) || [];
     const user = {
       name: name,
       email: email,
@@ -73,166 +74,150 @@ function submitForm(e) {
 const show = document.getElementById('show-table');
 let tableContainer = document.getElementById('table-container');
 
-function showTable(){
-  
-  if(tableContainer.style.display === 'none'){
+function showTable() {
+  if (tableContainer.style.display === 'none') {
     tableContainer.style.display = "block";
     show.innerText = 'Hide';
-  }
-  else{
+  } else {
     tableContainer.style.display = "none";
     show.innerText = 'Show';
-
   }
 }
 
+
+
 const tableBody = document.getElementById("tableBody");
-const users = JSON.parse(localStorage.getItem("userDetails")) || [];
 let rowsPerPage = 5;
 let currentPage = 1;
 const paginationSelector = document.getElementById('pagination-selector');
 
 
-function paginationChange(){
-    rowsPerPage = paginationSelector.value;
-    displayRows(currentPage);  
+function updateUserTable(users) {
+  tableBody.innerHTML = "";
+
+  users.forEach((user) => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${user.name}</td>
+      <td>${user.age}</td>
+      <td>${user.email}</td>
+      <td>${user.phone}</td>
+    `;
+    tableBody.appendChild(row);
+  });
+  displayRows(currentPage);
+
 }
 
-function updateUserTable() {
-    tableBody.innerHTML = "";
 
-    users.forEach((user) => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-            <td>${user.name}</td>
-            <td>${user.age}</td>
-            <td>${user.email}</td>
-            <td>${user.phone}</td>
-        `;
-        tableBody.appendChild(row);
-    });
+function paginationChange() {
+  
+  rowsPerPage = paginationSelector.value;
+  displayRows(currentPage);
+  updatePagination();
+  updateUserTable(users);
 }
+
 
 function displayRows(page) {
-    const startIndex = (page - 1) * rowsPerPage;
-    const endIndex = startIndex + rowsPerPage;
-    const rows = tableBody.querySelectorAll("tr");
-    rows.forEach((row, index) => {
-        if (index >= startIndex && index < endIndex) {
-            row.style.display = "table-row";
-        } else {
-            row.style.display = "none";
-        }
-    });
-
-    updatePagination();
-}
-
-const prevButton = document.getElementById("prev");
-const nextButton = document.getElementById("next");
-
-prevButton.addEventListener("click", () => {
-    if (currentPage > 1) {
-        currentPage--;
-        displayRows(currentPage);
+  const startIndex = (page - 1) * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const visibleRows = Array.from(tableBody.querySelectorAll("tr")).filter(row => row.style.display !== 'none');
+  visibleRows.forEach((row, index) => {
+    if (index >= startIndex && index < endIndex) {
+      row.style.display = "table-row";
+    } else {
+      row.style.display = "none";
     }
-});
+  });
 
-nextButton.addEventListener("click", () => {
-    const lastPage = Math.ceil(tableBody.querySelectorAll("tr").length / rowsPerPage);
-    if (currentPage < lastPage) {
-        currentPage++;
-        displayRows(currentPage);
-    }
-});
-
-function updatePagination() {
-    const lastPage = Math.ceil(tableBody.querySelectorAll("tr").length / rowsPerPage);
-    prevButton.disabled = currentPage === 1;
-    nextButton.disabled = currentPage === lastPage;
-}
-
-function searchFunction() {
-  var mySearch = document.getElementById("mySearch");
-  var filter = mySearch.value.trim().toUpperCase();
-  const rows = tableBody.querySelectorAll("tr");
-
-  let count = 0;
-  
-
-  for (let i = 0; i < rows.length; i++) {
-      const user = users[i];
-      const userValues = Object.values(user);
-      
-      var found = false;
-
-      for (let j = 0; j < userValues.length; j++) {
-          const value = userValues[j].toString().toUpperCase();
-          if (value.includes(filter)) {
-              found = true;
-              break;
-          }
-      }
-
-     
-      if ((found || filter === "") && count < rowsPerPage) {
-          rows[i].style.display = ""; 
-          count++;
-      } else {
-          rows[i].style.display = "none"; 
-      }
-  }
-
- 
   updatePagination();
 }
 
 
 
+const prevButton = document.getElementById("prev");
+const nextButton = document.getElementById("next");
+
+prevButton.addEventListener("click", () => {
+  if (currentPage > 1) {
+    currentPage--;
+    displayRows(currentPage);
+    updateUserTable(users);
+  }
+});
+
+
+
+nextButton.addEventListener("click", () => {
+  const lastPage = Math.ceil(tableBody.querySelectorAll("tr").length / rowsPerPage);
+  if (currentPage < lastPage) {
+    currentPage++;
+    displayRows(currentPage);
+    updateUserTable(users);
+  }
+});
+
+
+function updatePagination() {
+  const lastPage = Math.ceil(tableBody.querySelectorAll("tr").length / rowsPerPage);
+  prevButton.disabled = currentPage === 1;
+  nextButton.disabled = currentPage === lastPage;
+}
+
+
+function searchFunction() {
+  var mySearch = document.getElementById("mySearch");
+  var filter = mySearch.value.trim().toUpperCase();
+
+  const filteredUsers = users.filter(user => {
+    const userValues = Object.values(user);
+    return userValues.some(value => value.toString().toUpperCase().includes(filter));
+  });
+
+
+  updateUserTable(filteredUsers);
+
+  currentPage = 1; 
+ 
+
+}
+
 const headers = document.querySelectorAll("#myTable th");
-let sortingOrder = Array.from(headers).map(() => -1); 
+let sortingOrder = Array.from(headers).map(() => -1);
 let SortColumn = null;
 
-headers.forEach((header, index) => {
-  header.addEventListener("click", function() {
-    const column = header.dataset.column;
+const sortingOrderMap = new Map(); 
 
-    if (column === SortColumn) {
-      sortingOrder[index] *= -1; 
-    } else {
-      SortColumn = column;
-      sortingOrder = Array.from({ length: headers.length }).fill(-1); 
-      sortingOrder[index] = 1; 
-    }
+Array.from(headers).map((header, index) => {
+  sortingOrderMap.set(index, -1); 
+  header.addEventListener("click", function () {
+    
+    const columnIndex = Array.from(headers).indexOf(header);
 
-    sortTable(index);
+    sortingOrderMap.set(columnIndex, sortingOrderMap.get(columnIndex) * -1); 
+
+    sortTable(columnIndex);
   });
 });
 
-function sortTable(columnIndex) {
+
+function sortTable(columnIndex) { 
+  
   const tableBody = document.getElementById("tableBody");
   const rows = Array.from(tableBody.querySelectorAll("tr"));
 
   rows.sort((rowA, rowB) => {
     const cellA = rowA.cells[columnIndex].textContent.trim().toLowerCase();
     const cellB = rowB.cells[columnIndex].textContent.trim().toLowerCase();
-    
    
     const cellComparison = cellA.localeCompare(cellB);
-    if (cellComparison !== 0) {
-      return sortingOrder[columnIndex] * cellComparison;
-    } else {
-      
-      return sortingOrder[columnIndex] * (rows.indexOf(rowA) - rows.indexOf(rowB));
-    }
+    return sortingOrderMap.get(columnIndex) * cellComparison;
   });
+
 
   rows.forEach(row => {
-    tableBody.appendChild(row);
+    tableBody.appendChild(row); 
+    console.log(row);
   });
 }
-
-
-
-
-
